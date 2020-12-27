@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Locale;
 
 //todo добавить поддержку яндекс переводчика этот слабый очень
 @Component
@@ -62,9 +63,9 @@ public class AzureTranslator implements Translator{
                 List<Translation.InnerTranslation> innerTranslationList = translation.getTranslations();
                 for (Translation.InnerTranslation innerTranslation : innerTranslationList) {
                     if (StringUtils.isEmpty(result.toString())) {
-                        result.append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage);
+                        result.append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage.toUpperCase(Locale.ROOT));
                     } else {
-                        result.append("\n").append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage);
+                        result.append("\n").append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage.toUpperCase(Locale.ROOT));
                     }
                 }
             }

@@ -23,8 +23,8 @@ public class TestTelegramPingPongBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         startAnswer(update);
         translatePhrase(update);
-
     }
+
     //todo добавить реальный перевод который будет кешироваться во встроенной nosql/sql БД какой-нибудь
     //те поиск по уже переведённым фразам из бд и если нет такого, то запрос в апи переводчика
     private void translatePhrase(Update update) {
@@ -34,6 +34,15 @@ public class TestTelegramPingPongBot extends TelegramLongPollingBot {
             message.setChatId(String.valueOf(update.getMessage().getChatId()));
             String translationText = translator.translate(textToTranslate);
             message.setText(translationText);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        } else if ("/translate".equals(update.getMessage().getText())) {
+            SendMessage message = new SendMessage();
+            message.setChatId(String.valueOf(update.getMessage().getChatId()));
+            message.setText("Пожалуйста используйте /translate + text");
             try {
                 execute(message);
             } catch (TelegramApiException e) {
