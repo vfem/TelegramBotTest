@@ -1,0 +1,13 @@
+# Project exclude paths
+/out/
+/target/
+/target/classes/org/example/App.class
+/target/classes/application.yaml
+/target/test-classes/org/example/AppTest.class
+/target/classes/org/example/Bot/Translation/AzureTranslator$1.class
+/target/classes/org/example/Bot/Translation/AzureTranslator.class
+/target/classes/org/example/Bot/TestTelegramPingPongBot.class
+/target/classes/org/example/Bot/Translation/Translation$DetectedLanguage.class
+/target/classes/org/example/Bot/Translation/Translation$InnerTranslation.class
+/target/classes/org/example/Bot/Translation/Translation.class
+/target/classes/org/example/Bot/Translation/Translator.class
