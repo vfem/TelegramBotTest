@@ -54,16 +54,21 @@ public class AzureTranslator implements Translator{
         StringBuilder result = new StringBuilder();
         AzureTranslator translateRequest = new AzureTranslator();
         try {
+            //получаем респонс от Azure
             String response = translateRequest.PostString(input);
+            //объясняем gson в какой тип десериализировать полученный ответ, массив json
             Type type = new TypeToken<List<Translation>>(){}.getType();
             List<Translation> translationList = new Gson().fromJson(response, type);
+            //перебираем десериализированные ответы и склеиваем ответ
             for (Translation translation : translationList) {
+                Translation.DetectedLanguage detectedLanguage = translation.getDetectedLanguage();
+                String sourceLanguage = detectedLanguage.getLanguage();
                 List<Translation.InnerTranslation> innerTranslationList = translation.getTranslations();
                 for (Translation.InnerTranslation innerTranslation : innerTranslationList) {
                     if (StringUtils.isEmpty(result.toString())) {
-                        result.append(innerTranslation.getText());
+                        result.append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage);
                     } else {
-                        result.append(" ").append(innerTranslation.getText());
+                        result.append("\n").append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage);
                     }
                 }
             }
