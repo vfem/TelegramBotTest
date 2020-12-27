@@ -54,14 +54,14 @@ public class AzureTranslator implements Translator{
             //получаем респонс от Azure
             String response = translateRequest.PostString(input);
             //объясняем gson в какой тип десериализировать полученный ответ, массив json
-            Type type = new TypeToken<List<Translation>>(){}.getType();
-            List<Translation> translationList = new Gson().fromJson(response, type);
+            Type type = new TypeToken<List<TranslationAzureResponse>>(){}.getType();
+            List<TranslationAzureResponse> translationAzureResponseList = new Gson().fromJson(response, type);
             //перебираем десериализированные ответы и склеиваем ответ
-            for (Translation translation : translationList) {
-                Translation.DetectedLanguage detectedLanguage = translation.getDetectedLanguage();
+            for (TranslationAzureResponse translationAzureResponse : translationAzureResponseList) {
+                TranslationAzureResponse.DetectedLanguage detectedLanguage = translationAzureResponse.getDetectedLanguage();
                 String sourceLanguage = detectedLanguage.getLanguage();
-                List<Translation.InnerTranslation> innerTranslationList = translation.getTranslations();
-                for (Translation.InnerTranslation innerTranslation : innerTranslationList) {
+                List<TranslationAzureResponse.InnerTranslation> innerTranslationList = translationAzureResponse.getTranslations();
+                for (TranslationAzureResponse.InnerTranslation innerTranslation : innerTranslationList) {
                     if (StringUtils.isEmpty(result.toString())) {
                         result.append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage.toUpperCase(Locale.ROOT));
                     } else {

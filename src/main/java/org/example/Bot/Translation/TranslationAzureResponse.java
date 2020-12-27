@@ -2,7 +2,7 @@ package org.example.Bot.Translation;
 
 import java.util.List;
 
-public class Translation {
+public class TranslationAzureResponse {
     public DetectedLanguage detectedLanguage;
     public List<InnerTranslation> translations;
 
