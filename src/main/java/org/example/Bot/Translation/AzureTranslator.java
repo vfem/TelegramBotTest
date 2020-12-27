@@ -11,7 +11,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Locale;
 
-//todo добавить поддержку яндекс переводчика этот слабый очень
 @Component
 public class AzureTranslator implements Translator {
 	/*  Configure the local environment:
