@@ -18,6 +18,10 @@
       <id>icm</id>
       <url>http://maven.icm.edu.pl/artifactory/repo/</url>
     </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -37,13 +41,11 @@
       <artifactId>telegrambots</artifactId>
       <version>5.0.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>1.27</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp -->
     <dependency>
       <groupId>com.squareup.okhttp</groupId>
       <artifactId>okhttp</artifactId>
@@ -53,6 +55,11 @@
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.goxr3plus</groupId>
+      <artifactId>java-google-speech-api</artifactId>
+      <version>V2.0</version>
     </dependency>
 
 
