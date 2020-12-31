@@ -1,6 +1,7 @@
 package org.example.Bot;
 
 import org.example.Bot.Translation.Translator;
+import org.example.db.TranslationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -10,16 +11,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class TestTelegramPingPongBot extends TelegramLongPollingBot {
-	private String botName = System.getenv("botName");
+public class TranslationTelegramBot extends TelegramLongPollingBot {
+	private final String botName = System.getenv("botName");
 
-	private String botToken = System.getenv("botToken");
+	private final String botToken = System.getenv("botToken");
 
 	private static final String[] commandArr = {"/start", "/translate + text"};
 
-	@Autowired
-	@Qualifier("googleCrutchTranslator")
-	Translator translator;
+	private Translator translator;
+
 
 	@Override
 	public void onUpdateReceived(Update update) {
@@ -77,6 +77,11 @@ public class TestTelegramPingPongBot extends TelegramLongPollingBot {
 
 	}
 
+	@Autowired
+	@Qualifier("googleCrutchTranslator")
+	public void setTranslator(Translator translator) {
+		this.translator = translator;
+	}
 
 	@Override
 	public String getBotUsername() {

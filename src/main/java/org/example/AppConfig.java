@@ -1,7 +1,6 @@
 package org.example;
 
 import org.h2.Driver;
-import org.h2.tools.Server;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +11,6 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
-import java.sql.SQLException;
 import java.util.Properties;
 
 @Configuration

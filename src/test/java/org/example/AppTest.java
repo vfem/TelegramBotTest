@@ -30,16 +30,12 @@ public class AppTest {
 	@Before
 	@Rollback(false)
 	public void setUp() {
-		LOG.info("*******************setUp*******************************");
 		TranslationEntity translationEntity = new TranslationEntity("hi", "EN", "привет");
-		LOG.info(translationEntity.toString());
-		LOG.info("*******************setUp*******************************");
 		translationsRepository.save(translationEntity);
 	}
 
 	@Test
 	public void readTest() {
-		LOG.info("*******************readTest*******************************");
 		Iterable<TranslationEntity> allTranslations = translationsRepository.findAll();
 		for (TranslationEntity entity : allTranslations) {
 			LOG.info(entity.toString());
@@ -50,6 +46,11 @@ public class AppTest {
 			Assert.assertNotEquals("EN1", entity.getSourceLanguage());
 			Assert.assertNotEquals("привет1", entity.getRuTranslation());
 		}
-		LOG.info("*******************readTest*******************************");
 	}
+
+	@Test
+	public void emptyResultTest() {
+		Assert.assertNull(translationsRepository.findBySourceIgnoreCase("NoNeXisTinG_SouRce"));
+	}
+
 }

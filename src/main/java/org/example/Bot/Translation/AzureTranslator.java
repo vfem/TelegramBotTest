@@ -53,8 +53,7 @@ public class AzureTranslator implements Translator {
 			//получаем респонс от Azure
 			String response = translateRequest.PostString(input);
 			//объясняем gson в какой тип десериализировать полученный ответ, массив json
-			Type type = new TypeToken<List<TranslationAzureResponse>>() {
-			}.getType();
+			Type type = new TypeToken<List<TranslationAzureResponse>>(){}.getType();
 			List<TranslationAzureResponse> translationAzureResponseList = new Gson().fromJson(response, type);
 			//перебираем десериализированные ответы и склеиваем ответ
 			for (TranslationAzureResponse translationAzureResponse : translationAzureResponseList) {
