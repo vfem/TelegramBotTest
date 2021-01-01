@@ -3,8 +3,11 @@ package org.example.Bot.Translation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.*;
+import org.apache.commons.lang3.StringUtils;
+import org.example.db.TranslationEntity;
+import org.example.db.TranslationsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -25,12 +28,14 @@ public class AzureTranslator implements Translator {
 	 * in a console or with Visual Studio, the shell (or Visual Studio) needs to be
 	 * closed and reloaded to take the environment variable into account.
 	 */
-	private static String subscriptionKey = System.getenv("TRANSLATOR_TEXT_SUBSCRIPTION_KEY");
-	private static String endpoint = System.getenv("TRANSLATOR_TEXT_ENDPOINT");
-	String url = endpoint + "/translate?api-version=3.0&to=ru";
+	private static final String subscriptionKey = System.getenv("TRANSLATOR_TEXT_SUBSCRIPTION_KEY");
+	private static final String endpoint = System.getenv("TRANSLATOR_TEXT_ENDPOINT");
+	private final String url = endpoint + "/translate?api-version=3.0&to=ru";
 
 	// Instantiates the OkHttpClient.
-	OkHttpClient client = new OkHttpClient();
+	private final OkHttpClient client = new OkHttpClient();
+
+	private TranslationsRepository translationsRepository;
 
 	// This function performs a POST request.
 	public String PostString(String input) throws IOException {
@@ -47,30 +52,47 @@ public class AzureTranslator implements Translator {
 
 	@Override
 	public String translate(String input) {
-		StringBuilder result = new StringBuilder();
+		String result = "";
 		AzureTranslator translateRequest = new AzureTranslator();
 		try {
-			//получаем респонс от Azure
-			String response = translateRequest.PostString(input);
-			//объясняем gson в какой тип десериализировать полученный ответ, массив json
-			Type type = new TypeToken<List<TranslationAzureResponse>>(){}.getType();
-			List<TranslationAzureResponse> translationAzureResponseList = new Gson().fromJson(response, type);
-			//перебираем десериализированные ответы и склеиваем ответ
-			for (TranslationAzureResponse translationAzureResponse : translationAzureResponseList) {
-				TranslationAzureResponse.DetectedLanguage detectedLanguage = translationAzureResponse.getDetectedLanguage();
-				String sourceLanguage = detectedLanguage.getLanguage();
-				List<TranslationAzureResponse.InnerTranslation> innerTranslationList = translationAzureResponse.getTranslations();
-				for (TranslationAzureResponse.InnerTranslation innerTranslation : innerTranslationList) {
-					if (StringUtils.isEmpty(result.toString())) {
-						result.append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage.toUpperCase(Locale.ROOT));
-					} else {
-						result.append("\n").append(innerTranslation.getText()).append("\n\nПереведено с ").append(sourceLanguage.toUpperCase(Locale.ROOT));
+			TranslationEntity translationEntity = translationsRepository.findBySourceIgnoreCase(input);
+			String sourceLanguage;
+			String translation;
+			if (translationEntity == null) {
+				//получаем респонс от Azure
+				String response = translateRequest.PostString(input);
+				//объясняем gson в какой тип десериализировать полученный ответ, массив json
+				Type type = new TypeToken<List<TranslationAzureResponse>>(){}.getType();
+				List<TranslationAzureResponse> translationAzureResponseList = new Gson().fromJson(response, type);
+				//перебираем десериализированные ответы и склеиваем ответ
+				for (TranslationAzureResponse translationAzureResponse : translationAzureResponseList) {
+					TranslationAzureResponse.DetectedLanguage detectedLanguage = translationAzureResponse.getDetectedLanguage();
+					sourceLanguage = detectedLanguage.getLanguage();
+					List<TranslationAzureResponse.InnerTranslation> innerTranslationList = translationAzureResponse.getTranslations();
+					for (TranslationAzureResponse.InnerTranslation innerTranslation : innerTranslationList) {
+						translation = innerTranslation.getText();
+						if (StringUtils.isEmpty(result)) {
+							result = formPrettyResultString(sourceLanguage.toUpperCase(Locale.ROOT), translation);
+						} else {
+							result = result + "\n" + formPrettyResultString(sourceLanguage.toUpperCase(Locale.ROOT), translation);
+						}
+						translationsRepository.save(new TranslationEntity(input, sourceLanguage, translation));
 					}
 				}
+			} else {
+				sourceLanguage = translationEntity.getSourceLanguage();
+				translation = translationEntity.getRuTranslation();
+				result = formPrettyResultString(sourceLanguage.toUpperCase(Locale.ROOT), translation);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			result = "Ошибка перевода, попробуйте снова";
 		}
-		return result.toString();
+		return result;
+	}
+
+	@Autowired
+	public void setTranslationsRepository(TranslationsRepository translationsRepository) {
+		this.translationsRepository = translationsRepository;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.Locale;
 
 @Component
 public class GoogleCrutchTranslator implements Translator {
+
 	private TranslationsRepository translationsRepository;
 
 	//нормальный доступ для нас в google cloud закрыт использую библиотеку, котоарая используется как костыль
@@ -18,29 +19,26 @@ public class GoogleCrutchTranslator implements Translator {
 	//работает так себе с редкими языками, но с английским языком вроде всё в порядке
 	@Override
 	public String translate(String input) {
-		StringBuilder result = new StringBuilder();
-
+		String result;
 		try {
 			TranslationEntity translationEntity = translationsRepository.findBySourceIgnoreCase(input);
-
+			String sourceLanguage;
+			String translation;
 			if (translationEntity == null) {
-				String sourceLanguage = GoogleTranslate.detectLanguage(input).toUpperCase(Locale.ROOT);
-				String translation = GoogleTranslate.translate("ru", input);
+				sourceLanguage = GoogleTranslate.detectLanguage(input).toUpperCase(Locale.ROOT);
+				translation = GoogleTranslate.translate("ru", input);
 				translationsRepository.save(new TranslationEntity(input, sourceLanguage, translation));
-
-				result.append(translation);
-				result.append("\nпереведено с ").append(sourceLanguage);
-				result.append("\nсохранено в БД для кеширования");
 			} else {
-				result.append(translationEntity.getRuTranslation());
-				result.append("\nпереведено с ").append(translationEntity.getSourceLanguage());
-				result.append("\nнайдено в БД, запрос в API не выполнялся");
+				sourceLanguage = translationEntity.getSourceLanguage();
+				translation = translationEntity.getRuTranslation();
 			}
+			result = formPrettyResultString(sourceLanguage, translation);
 		} catch (IOException e) {
 			e.printStackTrace();
+			result = "Ошибка перевода, попробуйте снова";
 		}
 
-		return result.toString();
+		return result;
 	}
 
 	@Autowired

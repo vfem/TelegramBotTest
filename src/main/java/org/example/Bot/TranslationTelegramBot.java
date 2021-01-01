@@ -20,15 +20,12 @@ public class TranslationTelegramBot extends TelegramLongPollingBot {
 
 	private Translator translator;
 
-
 	@Override
 	public void onUpdateReceived(Update update) {
 		startAnswer(update);
 		translatePhrase(update);
 	}
 
-	//todo добавить реальный перевод который будет кешироваться во встроенной nosql/sql БД какой-нибудь
-	//те поиск по уже переведённым фразам из бд и если нет такого, то запрос в апи переводчика
 	private void translatePhrase(Update update) {
 		if (update.getMessage().getText().startsWith("/translate ")) {
 			String textToTranslate = update.getMessage().getText().split("/translate ")[1];
