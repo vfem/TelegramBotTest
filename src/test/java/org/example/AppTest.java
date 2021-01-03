@@ -19,7 +19,7 @@ import javax.transaction.Transactional;
  * Unit test for simple App.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+@ContextConfiguration(classes = App.class)
 @Transactional
 public class AppTest {
 	private static final Logger LOG = LoggerFactory.getLogger(AppTest.class);
