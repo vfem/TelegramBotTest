@@ -74,7 +74,7 @@ public class TranslationTelegramBot extends TelegramLongPollingBot {
 	}
 
 	@Autowired
-	@Qualifier("azureTranslator")
+	@Qualifier("googleCrutchTranslator")
 	public void setTranslator(Translator translator) {
 		this.translator = translator;
 	}
