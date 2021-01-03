@@ -95,4 +95,67 @@ public class AzureTranslator implements Translator {
 	public void setTranslationsRepository(TranslationsRepository translationsRepository) {
 		this.translationsRepository = translationsRepository;
 	}
+
+	private static class TranslationAzureResponse {
+		public TranslationAzureResponse.DetectedLanguage detectedLanguage;
+		public List<TranslationAzureResponse.InnerTranslation> translations;
+
+		public TranslationAzureResponse.DetectedLanguage getDetectedLanguage() {
+			return detectedLanguage;
+		}
+
+		public void setDetectedLanguage(TranslationAzureResponse.DetectedLanguage detectedLanguage) {
+			this.detectedLanguage = detectedLanguage;
+		}
+
+		public List<TranslationAzureResponse.InnerTranslation> getTranslations() {
+			return translations;
+		}
+
+		public void setTranslations(List<TranslationAzureResponse.InnerTranslation> translations) {
+			this.translations = translations;
+		}
+
+		private static class DetectedLanguage {
+			public String language;
+			public double score;
+
+			public String getLanguage() {
+				return language;
+			}
+
+			public void setLanguage(String language) {
+				this.language = language;
+			}
+
+			public double getScore() {
+				return score;
+			}
+
+			public void setScore(double score) {
+				this.score = score;
+			}
+		}
+
+		private static class InnerTranslation {
+			public String getText() {
+				return text;
+			}
+
+			public void setText(String text) {
+				this.text = text;
+			}
+
+			public String getTo() {
+				return to;
+			}
+
+			public void setTo(String to) {
+				this.to = to;
+			}
+
+			public String text;
+			public String to;
+		}
+	}
 }
