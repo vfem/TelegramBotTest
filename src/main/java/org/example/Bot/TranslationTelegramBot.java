@@ -21,8 +21,11 @@ public class TranslationTelegramBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		startAnswer(update);
-		translatePhrase(update);
+		Thread thread = new Thread(() -> {
+			startAnswer(update);
+			translatePhrase(update);
+		});
+		thread.start();
 	}
 
 	private void translatePhrase(Update update) {
