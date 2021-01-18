@@ -1,6 +1,8 @@
 package org.example.Bot;
 
 import org.example.Bot.Translation.Translator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -9,8 +11,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Component
 public class TranslationTelegramBot extends TelegramLongPollingBot {
+	private static Logger log = LoggerFactory.getLogger(TranslationTelegramBot.class);
 	private final String botName = System.getenv("botName");
 
 	private final String botToken = System.getenv("botToken");
@@ -21,14 +27,15 @@ public class TranslationTelegramBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		Thread thread = new Thread(() -> {
+		ExecutorService executorService = Executors.newCachedThreadPool();
+		executorService.execute(() -> {
 			startAnswer(update);
 			translatePhrase(update);
 		});
-		thread.start();
 	}
 
 	private void translatePhrase(Update update) {
+		log.info(Thread.currentThread().getName());
 		if (update.getMessage().getText().startsWith("/translate ")) {
 			String textToTranslate = update.getMessage().getText().split("/translate ")[1];
 			SendMessage message = new SendMessage();
@@ -53,6 +60,7 @@ public class TranslationTelegramBot extends TelegramLongPollingBot {
 	}
 
 	private void startAnswer(Update update) {
+		log.info(Thread.currentThread().getName());
 		if ("/start".equals(update.getMessage().getText())) {
 			SendMessage message = new SendMessage();
 			message.setChatId(String.valueOf(update.getMessage().getChatId()));
