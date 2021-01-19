@@ -1,11 +1,11 @@
-package org.example.Bot.Translation;
+package org.example.bot.Translation;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.*;
 import org.apache.commons.lang3.StringUtils;
-import org.example.db.TranslationEntity;
-import org.example.db.TranslationsRepository;
+import org.example.dao.TranslationEntity;
+import org.example.dao.TranslationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

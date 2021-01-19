@@ -1,4 +1,4 @@
-package org.example.Bot.Translation;
+package org.example.bot.Translation;
 
 public interface Translator {
 	String translate(String input);

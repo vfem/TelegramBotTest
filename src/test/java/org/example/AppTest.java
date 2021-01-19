@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.db.TranslationEntity;
-import org.example.db.TranslationsRepository;
+import org.example.dao.TranslationEntity;
+import org.example.dao.TranslationsRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

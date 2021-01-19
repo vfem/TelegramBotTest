@@ -1,6 +1,6 @@
-package org.example.Bot;
+package org.example.bot;
 
-import org.example.Bot.Translation.Translator;
+import org.example.bot.Translation.Translator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 @Component
 public class TranslationTelegramBot extends TelegramLongPollingBot {
 	private static Logger log = LoggerFactory.getLogger(TranslationTelegramBot.class);
+
 	private final String botName = System.getenv("botName");
 
 	private final String botToken = System.getenv("botToken");
@@ -25,9 +26,10 @@ public class TranslationTelegramBot extends TelegramLongPollingBot {
 
 	private Translator translator;
 
+	private static final ExecutorService executorService = Executors.newCachedThreadPool();
+
 	@Override
 	public void onUpdateReceived(Update update) {
-		ExecutorService executorService = Executors.newCachedThreadPool();
 		executorService.execute(() -> {
 			startAnswer(update);
 			translatePhrase(update);
